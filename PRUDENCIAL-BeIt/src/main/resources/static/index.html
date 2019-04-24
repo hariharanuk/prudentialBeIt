@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Prudencial Test</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script   src="https://code.jquery.com/jquery-3.4.0.min.js"  integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="   crossorigin="anonymous"></script>
+<script>
+ $(document).ready(function(){
+
+	 $("#questionBox").hide();	 
+	 $("#productList").change(function(){		
+		 if($(this).val()!= "0"){
+			 $("#questionBox").show();
+		 }
+		 else{
+			 $("#questionBox").hide();
+		 }
+	 });
+	 
+	 $("#saveQuestion").click(function(){
+		var productId = $("#productList").val();
+		var question= $("#productQuestion").val();
+		console.log(productId+"---"+question);
+		var datas = { "productId" :productId, "question" : question }
+		$.ajax({
+		     type: "POST",
+		     url: "/saveQuestion",
+		     data: datas,
+		     success:function(data){
+		    	 alert("Data Saved");
+		    	 $("#questionBox").hide();
+		    	 $("#productList").val("0");
+		    	 $("#productQuestion").text("");
+		     }
+		});		 
+	 });
+	 
+	 
+		$.ajax({
+		    type: 'GET',
+		    url: "/getAnswer",
+		    success:function(data){
+		    	
+		    	$.each(data, function(k, v) {
+		    	    console.log(k +"--"+v);
+		    	    console.log(v.productId);
+ 		    	    $('#tableTr').append(
+ 		    	    		'<tr><td>'+v.productId+'</td>'+
+ 		    	    		'<td>'+v.surveryQuestion+'</td>'+
+ 		    	    		'<td>'+v.userAnswer+'</td>'+
+ 		    	    		'<td>'+v.surveyText+'</td><tr>'
+	    	    
+		    	  );
+		    	   
+		    	   
+		    	});  
+		    	
+		    }
+		});
+	 
+ });
+</script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Prudential</a>
+
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link active" href="index.html">Admin <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="user.html">User</a>
+     
+    </div>
+  </div>
+</nav>
+<div class="container-fluid">
+  <div id="mainContent" >
+  
+  <div style="margin:10px;" class="card">
+    <div class="card-body">
+    <form >
+		  <div class="form-group">
+			  
+			  <label for="sel1">Select Product : </label>
+				  <select class="form-control" style="width:200px;" id="productList">
+				    <option value="0">Select Product</option>
+				    <option value="product1">Product 1</option>
+				    <option value="product2">Product 2</option>
+				    <option value="product3">Product 3</option>
+				    <option value="product4">Product 4</option>
+				    <option value="product5">Product 5</option>
+				    <option value="product6">Product 6</option>
+				    <option value="product7">Product 7</option>
+				    <option value="product8">Product 8</option>
+				    <option value="product9">Product 9</option>
+				    <option value="product10">Product 10</option>				    
+				  </select>
+			  	  
+		</div>
+
+  
+  <div id="questionBox">
+   <div class="form-group"  >
+      <label >Write a question for selected product</label>
+      <input id="productQuestion" class="form-control" id="inputdefault" type="text">
+    </div>
+     <button id="saveQuestion" type="button" class="btn btn-primary">Save</button>
+   </div>
+  </form>
+ 
+  </div>
+</div>
+
+<div style="margin:10px;"  class="card">
+  <div class="card-header">Survey</div>
+  <div class="card-body">
+  
+   <table class="table">
+    <thead>
+      <tr>
+        <th>Product Id</th>
+        <th>Question</th>
+        <th>Rating</th>
+        <th>Rating text</th>
+      </tr>
+    </thead>
+    <tbody id="tableTr"></tbody></table>
+  
+  </div> 
+
+</div>
+
+</div>
+  </div>
+
+</body>
+</html>

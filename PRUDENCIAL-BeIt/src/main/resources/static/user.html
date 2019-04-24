@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Prudential Test</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script   src="https://code.jquery.com/jquery-3.4.0.min.js"  integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="   crossorigin="anonymous"></script>
+
+<script>
+$(document).ready(function(){
+	$.ajax({
+	    type: 'GET',
+	    url: "/getQuestion",
+	    success:function(data){
+	    	var i = 1;
+	    	$.each(data, function(k, v) {
+	    	    console.log(k +"--"+v);
+	    	    $('#mainContent').append(
+			  	    '<div class="card" style="margin-top:10px;"><h5 id=productId-'+i+' class="card-header">'+k+' </h5><div class="card-body">'+
+	    	     	' <p id=questionId-'+i+' class="card-text">'+v+'</p>'+
+	    	     	'<div class="row"><div class="col-xs-6">'+
+	    	     	'<div class="form-group"><select class="form-control" style="width:200px;" id="rating-'+i+'"><option value="0" default >Select Rating</option><option value="Bad">1</option><option value="Ok">2</option><option value="Like it">3</option><option value="Good">4</option><option value="Excellent">5</option> </select></div>'+
+	    	     	'</div><div class="col-xs-6">'+
+	    	     	' <a id=ratingId-'+i+' style="margin-left:10px;color:#FFF;" class="ratingButtton btn btn-info">Save</a>'+
+	    	     	'<div></div>'+
+		    	    '</div></div>'	    	    
+	    	  );
+	    	    i++;
+	    	   
+	    	});  
+	    	
+	    }
+	});
+	
+	
+	
+	$('#mainContent').on("click", "a.ratingButtton", function(){
+	    //alert($(this).attr("id"));
+	    var clickedNumber = $(this).attr("id").replace("ratingId-", "");
+
+	    var productId  = $("#productId-"+clickedNumber).text();
+	    var questionId  = $("#questionId-"+clickedNumber).text();
+	    var rating  = $("#rating-"+clickedNumber).val();
+	    var ratingText =  $("#rating-"+clickedNumber).find('option:selected').text();
+	    console.log(productId+"--"+questionId+"--"+rating);
+	    var datas = { "productId" :productId, "questionId" : questionId,"rating": rating,"ratingText":ratingText}
+		 $.ajax({
+		     type: "POST",
+		     url: "/saveAnswer",
+		     data: datas,
+		     success:function(data){
+		    	 console.log("Data Saved");
+		     }
+		}); 
+	});
+});
+</script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Prudential</a>
+
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      
+      <a class="nav-item nav-link" href="index.html">Admin</a>
+      <a class="nav-item nav-link active" href="#">User <span class="sr-only">(current)</span></a>
+     
+    </div>
+  </div>
+</nav>
+
+
+<div class="container">
+	<div id="mainContent"></div>
+	
+	
+</div>
+
+</body>
+</html>
